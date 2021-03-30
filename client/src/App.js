@@ -1,9 +1,14 @@
-import React from 'react';
+import React from "react";
+import Editor from "./components/AceEditor";
+import "./styles/app.scss";
 
 function App() {
   return (
     <div className="App">
-      hello
+      <div className="editors">
+        <Editor marginRight="1rem" />
+        <Editor />
+      </div>
     </div>
   );
 }
