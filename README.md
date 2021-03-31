@@ -1,5 +1,5 @@
 # CodeWar
-<hr/>
+
 
 ## Pull Requests
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/cdnjs/cdnjs.svg?style=flat)]()
