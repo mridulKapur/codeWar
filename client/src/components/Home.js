@@ -16,8 +16,13 @@ class Home extends React.Component {
       <div>
         <h1>Home Page</h1>
         <Button>
-          <Link to={`/code/${this.props.roomHash}`}>
-          App
+          <Link to={`/code/duo/${this.props.roomHashDuo}`}>
+          Duo
+        </Link>
+        </Button>
+        <Button>
+          <Link to={`/code/solo/${this.props.roomHashSolo}`}>
+          Solo
         </Link>
         </Button>
       </div>
