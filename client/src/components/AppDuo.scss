@@ -1,0 +1,12 @@
+.resizer{
+    width:10px;
+    background-color: black;
+    height:100vh;
+    position:absolute;
+    left:50%;
+    z-index: 5;
+}
+
+.resizer:hover{
+    cursor:col-resize;
+}

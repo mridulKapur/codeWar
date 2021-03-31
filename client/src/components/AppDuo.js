@@ -1,45 +1,61 @@
-import React from "react";
+import React ,{useState,useEffect}  from "react";
 import { Dropdown } from "semantic-ui-react";
 import languages from "../utils/languages";
+import styles from "./AppDuo.scss"
 import * as ace from "ace-builds";
 import "ace-builds/src-noconflict/mode-c_cpp";
 import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/src-noconflict/ext-language_tools";
 import AceEditor from "react-ace";
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      currentLang: languages[0].key,
-      codeValue: languages[0].template,
-    };
-    this.onDDChange = this.onDDChange.bind(this);
-  }
-
-  onDDChange = (e, data) => {
-    const selectedVal = languages.filter((v) => v.key == data.value);
-    this.setState({
-      currentLang: data.value,
-      codeValue: selectedVal[0].template,
-    });
+function getWindowDimensions() {
+  const { innerWidth: width} = window;
+  return {
+    width
   };
+}
 
-  render() {
+
+const App = () => {
+    const {width } = getWindowDimensions();
+    const [currentLang1, setCurrentLang1] = useState(languages[0].key);
+    const [codeValue1, setCodeValue1] = useState(languages[0].template);
+    const [currentLang2, setCurrentLang2] = useState(languages[0].key);
+    const [codeValue2, setCodeValue2] = useState(languages[0].template);
+    const [resizerPos, setResizerPos] = useState(`${0.5 * width}`);
+
+  const dragEnd = (e) => {
+    const posi = Math.min(0.7 * width, Math.max(0.3 * width, e.clientX));
+    setResizerPos(posi);
+    console.log(e.clientX);
+    }
+
+    const onDDChange1 = (e, data) => {
+      const selectedVal = languages.filter((v) => v.key == data.value);
+      setCurrentLang1(data.value);
+      setCodeValue1(selectedVal[0].template)
+    };
+  
+    const onDDChange2 = (e, data) => {
+      const selectedVal = languages.filter((v) => v.key == data.value);
+      setCurrentLang2(data.value);
+      setCodeValue2(selectedVal[0].template)
+    };
+
     return (
       <div className="row">
-        <div className="col-6">
+        <div style={{width:`${resizerPos}px`}}>
           <Dropdown
             placeholder="Languages"
-            onChange={this.onDDChange}
+            onChange={onDDChange1}
             selection
-            value={this.state.currentLang}
+            value={currentLang1}
             options={languages}
           />
           <AceEditor
             style={{
               margin: "3rem auto",
-              width: "80vw",
+              width: "inherit",
               height: "70vh",
             }}
             fontSize={18}
@@ -47,7 +63,7 @@ class App extends React.Component {
             theme="github"
             showPrintMargin={false}
             name="UNIQUE_ID_OF_DIV"
-            value={this.state.codeValue}
+            value={codeValue1}
             editorProps={{ $blockScrolling: true }}
             setOptions={{
               enableBasicAutocompletion: true,
@@ -56,18 +72,19 @@ class App extends React.Component {
             }}
           />
         </div>
-        <div className="col-6">
+        <div className="resizer" style={{ left: `${resizerPos}px` }} draggable="true" onDragEnd={dragEnd}></div>
+        <div style={{width:`${width-resizerPos-10}px`,marginLeft:"10px"}}>
           <Dropdown
             placeholder="Languages"
-            onChange={this.onDDChange}
+            onChange={onDDChange2}
             selection
-            value={this.state.currentLang}
+            value={currentLang2}
             options={languages}
           />
           <AceEditor
             style={{
               margin: "3rem auto",
-              width: "80vw",
+              width: "inherit",
               height: "70vh",
             }}
             fontSize={18}
@@ -75,7 +92,7 @@ class App extends React.Component {
             theme="github"
             showPrintMargin={false}
             name="UNIQUE_ID_OF_DIV"
-            value={this.state.codeValue}
+            value={codeValue2}
             editorProps={{ $blockScrolling: true }}
             setOptions={{
               enableBasicAutocompletion: true,
@@ -86,7 +103,6 @@ class App extends React.Component {
         </div>
       </div>
     );
-  }
 }
-
 export default App;
+
