@@ -16,13 +16,14 @@ function getWindowDimensions() {
 }
 
 
-const App = () => {
+const AppDuo = ({socket}) => {
     const {width } = getWindowDimensions();
     const [currentLang1, setCurrentLang1] = useState(languages[0].key);
     const [codeValue1, setCodeValue1] = useState(languages[0].template);
     const [currentLang2, setCurrentLang2] = useState(languages[0].key);
     const [codeValue2, setCodeValue2] = useState(languages[0].template);
     const [resizerPos, setResizerPos] = useState(`${0.5 * width}`);
+    
 
   const dragEnd = (e) => {
     const posi = Math.min(0.7 * width, Math.max(0.3 * width, e.clientX));
@@ -41,6 +42,13 @@ const App = () => {
       setCurrentLang2(data.value);
       setCodeValue2(selectedVal[0].template)
     };
+
+    useEffect(() => {
+      socket.on('allow', (data) =>{
+        socket.id
+        data.members.filter()
+      })
+    })
 
     return (
       <div className="row">
@@ -104,5 +112,5 @@ const App = () => {
       </div>
     );
 }
-export default App;
+export default AppDuo;
 
