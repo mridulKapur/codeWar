@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Button } from "semantic-ui-react";
+import "../styles/home.scss";
 
 class Home extends React.Component {
   constructor(props) {
@@ -9,29 +9,39 @@ class Home extends React.Component {
   }
 
   componentDidMount() {
-    console.log(this.props)
+    console.log(this.props);
   }
 
   joinRoom = () => {
-    this.props.socket.emit('joinRoom', {
-      roomHash: this.props.roomHashDuo
-    })
-  }
+    this.props.socket.emit("joinRoom", {
+      roomHash: this.props.roomHashDuo,
+    });
+  };
 
   render() {
     return (
-      <div>
-        <h1>Home Page</h1>
-        <Button onClick={this.joinRoom}>
-          <Link to={`/code/duo/${this.props.roomHashDuo}`}>
-          Duo
-        </Link>
-        </Button>
-        <Button>
-          <Link to={`/code/solo/${this.props.roomHashSolo}`}>
-          Solo
-        </Link>
-        </Button>
+      <div className="home page">
+        <div className="main">
+          <div className="ui huge header inverted">
+            <span className="span">Code Wars</span>
+          </div>
+          <div class="ui hidden divider"></div>
+          <Link
+            to={`/code/duo/${this.props.roomHashDuo}`}
+            className="ui button big inverted"
+            onClick={this.joinRoom}
+            id="button"
+          >
+            Duo
+          </Link>
+          <Link
+            to={`/code/solo/${this.props.roomHashSolo}`}
+            className="ui button big inverted"
+            id="button"
+          >
+            Solo
+          </Link>
+        </div>
       </div>
     );
   }
