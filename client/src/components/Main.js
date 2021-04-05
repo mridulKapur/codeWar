@@ -14,31 +14,34 @@ class Main extends React.Component {
       roomHashSolo: "solohash",
       roomHashDuo: "duohash",
     };
-    this.getRandomString = this.getRandomString.bind(this)
+    this.getRandomString = this.getRandomString.bind(this);
   }
 
   componentDidMount() {
-    this.getRandomString(15)
-    this.getRandomString(20)
+    this.getRandomString(15);
+    this.getRandomString(20);
   }
 
   getRandomString(length) {
-    var randomChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    var result = '';
-    for ( var i = 0; i < length; i++ ) {
-        result += randomChars.charAt(Math.floor(Math.random() * randomChars.length));
+    var randomChars =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    var result = "";
+    for (var i = 0; i < length; i++) {
+      result += randomChars.charAt(
+        Math.floor(Math.random() * randomChars.length)
+      );
     }
-    if(length==15) {
+    if (length == 15) {
       this.setState({
-        roomHashSolo: result
-      })
+        roomHashSolo: result,
+      });
     }
-    if(length==20) {
+    if (length == 20) {
       this.setState({
-        roomHashDuo: result
-      })
+        roomHashDuo: result,
+      });
     }
-}
+  }
 
   render() {
     return (
@@ -56,13 +59,10 @@ class Main extends React.Component {
             )}
           ></Route>
           <Route
-            path={`/code/duo/${this.state.roomHashDuo}`}
+            path={`/code/duo/:id`}
             component={() => <AppDuo socket={socket} />}
           ></Route>
-          <Route
-            path={`/code/solo/${this.state.roomHashSolo}`}
-            component={() => <AppSolo />}
-          ></Route>
+          <Route path={`/code/solo/:id`} component={() => <AppSolo />}></Route>
         </Switch>
       </Router>
     );
