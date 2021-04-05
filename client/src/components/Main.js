@@ -47,7 +47,7 @@ class Main extends React.Component {
     return (
       <Router>
         <Switch>
-          <Route
+        <Route
             exact
             path="/"
             component={() => (
@@ -59,10 +59,13 @@ class Main extends React.Component {
             )}
           ></Route>
           <Route
-            path={`/code/duo/:id`}
+            path={`/code/duo/${this.state.roomHashDuo}`}
             component={() => <AppDuo socket={socket} />}
           ></Route>
-          <Route path={`/code/solo/:id`} component={() => <AppSolo />}></Route>
+          <Route
+            path={`/code/solo/${this.state.roomHashSolo}`}
+            component={() => <AppSolo />}
+          ></Route>
         </Switch>
       </Router>
     );
