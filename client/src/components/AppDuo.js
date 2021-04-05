@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Dropdown } from "semantic-ui-react";
+
 import languages from "../utils/languages";
-import styles from "./AppDuo.scss";
-import * as ace from "ace-builds";
-import "ace-builds/src-noconflict/mode-c_cpp";
-import "ace-builds/src-noconflict/theme-github";
-import "ace-builds/src-noconflict/ext-language_tools";
-import AceEditor from "react-ace";
+import "../styles/AppDuo.scss";
+//editor
+import Editor from "./AceEditor";
 
 function getWindowDimensions() {
   const { innerWidth: width } = window;
@@ -29,26 +27,26 @@ const AppDuo = ({ socket }) => {
   const dragEnd = (e) => {
     const posi = Math.min(0.7 * width, Math.max(0.3 * width, e.clientX));
     setResizerPos(posi);
-    console.log(e.clientX);
+    // console.log(e.clientX);
   };
 
   const onDDChange1 = (e, data) => {
-    const selectedVal = languages.filter((v) => v.key == data.value);
+    const selectedVal = languages.filter((v) => v.key === data.value);
     setCurrentLang1(data.value);
     setCodeValue1(selectedVal[0].template);
   };
 
   const onDDChange2 = (e, data) => {
-    const selectedVal = languages.filter((v) => v.key == data.value);
+    const selectedVal = languages.filter((v) => v.key === data.value);
     setCurrentLang2(data.value);
     setCodeValue2(selectedVal[0].template);
   };
 
   useEffect(() => {
     socket.on("allow", (data) => {
-      if (data.data.members[0] == socket.id) {
+      if (data.data.members[0] === socket.id) {
         setEditor1(true);
-      } else if (data.data.members[1] == socket.id) {
+      } else if (data.data.members[1] === socket.id) {
         console.log(2);
         setEditor2(true);
       } else {
@@ -61,32 +59,17 @@ const AppDuo = ({ socket }) => {
     <div className="row">
       <div style={{ width: `${resizerPos}px` }}>
         <Dropdown
+          style={{
+            margin: "1rem 1rem 0rem 1rem",
+            borderRadius: "1rem",
+          }}
           placeholder="Languages"
           onChange={onDDChange1}
           selection
           value={currentLang1}
           options={languages}
         />
-        <AceEditor
-          style={{
-            margin: "3rem auto",
-            width: "inherit",
-            height: "70vh",
-          }}
-          fontSize={18}
-          mode="c_cpp"
-          theme="github"
-          readOnly={spectator || editor2 ? true : false}
-          showPrintMargin={false}
-          name="UNIQUE_ID_OF_DIV"
-          value={codeValue1}
-          editorProps={{ $blockScrolling: true }}
-          setOptions={{
-            enableBasicAutocompletion: true,
-            enableLiveAutocompletion: true,
-            enableSnippets: true,
-          }}
-        />
+        <Editor spectator={spectator} editor={editor2} codeValue={codeValue1} />
       </div>
       <div
         className="resizer"
@@ -98,32 +81,17 @@ const AppDuo = ({ socket }) => {
         style={{ width: `${width - resizerPos - 10}px`, marginLeft: "10px" }}
       >
         <Dropdown
+          style={{
+            margin: "1rem 1rem 0rem 1rem",
+            borderRadius: "1rem",
+          }}
           placeholder="Languages"
           onChange={onDDChange2}
           selection
           value={currentLang2}
           options={languages}
         />
-        <AceEditor
-          style={{
-            margin: "3rem auto",
-            width: "inherit",
-            height: "70vh",
-          }}
-          fontSize={18}
-          mode="c_cpp"
-          readOnly={spectator || editor1 ? true : false}
-          theme="github"
-          showPrintMargin={false}
-          name="UNIQUE_ID_OF_DIV"
-          value={codeValue2}
-          editorProps={{ $blockScrolling: true }}
-          setOptions={{
-            enableBasicAutocompletion: true,
-            enableLiveAutocompletion: true,
-            enableSnippets: true,
-          }}
-        />
+        <Editor spectator={spectator} editor={editor1} codeValue={codeValue2} />
       </div>
     </div>
   );

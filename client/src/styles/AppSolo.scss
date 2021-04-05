@@ -1,0 +1,27 @@
+.field {
+  display: flex;
+}
+
+.flex {
+  position: relative;
+  float: right;
+
+  .input,
+  .output {
+    margin-top: 8px;
+    margin-left: 5px;
+    display: block;
+    width: 300px;
+    height: 200px;
+  }
+  .output:hover {
+    cursor: not-allowed;
+  }
+  .button {
+    margin: 4rem 0rem 0rem 8rem;
+  }
+}
+
+.soloEditor {
+  background: #636363;
+}

@@ -1,0 +1,30 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+.home {
+  width: 100%;
+  height: 46.3rem;
+  background: #696969;
+  z-index: 10;
+}
+
+.main {
+  position: absolute;
+  margin-left: 39rem;
+  margin-top: 20rem;
+}
+
+#button {
+  position: relative;
+  align-items: center;
+  margin-left: 0.8rem;
+}
+
+.span {
+  font-weight: 100;
+  text-align: center;
+  margin-top: 275px;
+  font-size: 3rem;
+}
