@@ -1,5 +1,6 @@
 const languages = [
     {
+      index: 0,
       key: "cpp",
       value: "cpp",
       text: "C++",
@@ -11,6 +12,7 @@ const languages = [
   }`,
     },
     {
+      index: 0,
       key: "c",
       value: "c",
       text: "C",
@@ -21,6 +23,7 @@ const languages = [
   }`,
     },
     {
+      index: 1,
       key: "java",
       value: "java",
       text: "JAVA",
@@ -31,6 +34,7 @@ const languages = [
   }`,
     },
     {
+      index: 2,
       key: "py",
       value: "py",
       text: "PYTHON 3",
