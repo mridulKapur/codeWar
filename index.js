@@ -1,5 +1,5 @@
 const express = require("express");
-//const request = require("request");
+const request = require("request");
 const app = express();
 const http = require("http");
 const server = http.createServer(app);
@@ -46,6 +46,28 @@ io.on("connection", (socket) => {
         }
       }
     }
+  });
+  socket.on("run", (data) => {
+    let program = {
+      code: data.code,
+      language: data.language,
+      input: data.input
+    };
+    request(
+      {
+        url: "https://codexweb.netlify.app/.netlify/functions/enforceCode",
+        method: "POST",
+        json: program,
+      },
+      (error, response, body) => {
+        console.log("error:", error);
+        console.log("statusCode:", response && response.statusCode);
+        console.log("body:", body);
+        io.emit('ans', {
+          output: body.output
+        })
+      }
+    );
   });
 });
 

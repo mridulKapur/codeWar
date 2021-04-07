@@ -15,6 +15,8 @@ function getWindowDimensions() {
 
 const AppDuo = ({ socket }) => {
   const { width } = getWindowDimensions();
+  const [langModeIndex1, setLangMode1] = useState(languages[0].index)
+  const [langModeIndex2, setLangMode2] = useState(languages[0].index)
   const [currentLang1, setCurrentLang1] = useState(languages[0].key);
   const [codeValue1, setCodeValue1] = useState(languages[0].template);
   const [currentLang2, setCurrentLang2] = useState(languages[0].key);
@@ -32,13 +34,15 @@ const AppDuo = ({ socket }) => {
 
   const onDDChange1 = (e, data) => {
     const selectedVal = languages.filter((v) => v.key === data.value);
-    setCurrentLang1(data.value);
+    setLangMode1(selectedVal[0].index)
+    setCurrentLang1(selectedVal[0].value);
     setCodeValue1(selectedVal[0].template);
   };
 
   const onDDChange2 = (e, data) => {
     const selectedVal = languages.filter((v) => v.key === data.value);
-    setCurrentLang2(data.value);
+    setLangMode2(selectedVal[0].index);
+    setCurrentLang2(selectedVal[0].value);
     setCodeValue2(selectedVal[0].template);
   };
 
@@ -55,6 +59,8 @@ const AppDuo = ({ socket }) => {
     });
   });
 
+  console.log(currentLang2)
+
   return (
     <div className="row">
       <div style={{ width: `${resizerPos}px` }}>
@@ -69,7 +75,7 @@ const AppDuo = ({ socket }) => {
           value={currentLang1}
           options={languages}
         />
-        <Editor spectator={spectator} editor={editor2} codeValue={codeValue1} />
+        <Editor spectator={spectator} editor={editor2} codeValue={codeValue1} modeIndex={langModeIndex1} currentLang={currentLang1} socket={socket}/>
       </div>
       <div
         className="resizer"
@@ -91,7 +97,7 @@ const AppDuo = ({ socket }) => {
           value={currentLang2}
           options={languages}
         />
-        <Editor spectator={spectator} editor={editor1} codeValue={codeValue2} />
+        <Editor spectator={spectator} editor={editor1} codeValue={codeValue2} modeIndex={langModeIndex2} currentLang={currentLang2} socket={socket}/>
       </div>
     </div>
   );

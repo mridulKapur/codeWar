@@ -40,7 +40,7 @@ class Home extends React.Component {
         <h1>Home Page</h1>
         <input type="text" onChange={this.inputChange}/>
         <Button onClick={this.joinRoom}>
-          <Link to={`/code/duo/${this.props.roomHashDuo}`}>
+          <Link to={`/code/duo/${this.state.inputValue}`}>
           Duo Join
         </Link>
         </Button>
