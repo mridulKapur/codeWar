@@ -39,21 +39,17 @@ class Home extends React.Component {
       <div>
         <h1>Home Page</h1>
         <input type="text" onChange={this.inputChange}/>
-        <Button onClick={this.joinRoom}>
-          <Link to={`/code/duo/${this.state.inputValue}`}>
+        
+          <Link to={`/code/duo/${this.props.roomHashDuo}`} onClick={this.joinRoom} className="ui button">
           Duo Join
-        </Link>
-        </Button>
-        <Button onClick={this.createRoom}>
-          <Link to={`/code/duo/${this.props.roomHashDuo}`}>
+          </Link>
+        
+          <Link to={`/code/duo/${this.props.roomHashDuo}`} onClick={this.createRoom} className="ui button">
           Duo Create
         </Link>
-        </Button>
-        <Button>
-          <Link to={`/code/solo/${this.props.roomHashSolo}`}>
+                  <Link to={`/code/solo/${this.props.roomHashSolo}`} className="ui button">
           Solo
         </Link>
-        </Button>
       </div>
     );
   }

@@ -64,16 +64,16 @@ class Editor extends React.Component {
             enableSnippets: true,
           }}
         />
-        <div className="inline">
-          <span>
-            <Button onClick={this.runCode}>Run</Button>
+        <div style={{display:"flex",flexDirection:"row-reverse",width:"100%",margin:"1rem 0"}}>
+          <Button className="runButton" onClick={this.runCode}>run</Button>
+          <div style={{display:"inline-flex",width:"80%",flexDirection:"row"}}>
             <TextArea placeholder="Input"/>
             <TextArea
               value={this.state.output}
               placeholder="Output"
             />
-          </span>
-        </div>
+          </div>
+        </div>  
       </div>
     );
   }

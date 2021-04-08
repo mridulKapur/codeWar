@@ -1,3 +1,7 @@
+*{
+  box-sizing: border-box;
+}
+
 .resizer {
   width: 10px;
   background-color: black;
@@ -9,8 +13,109 @@
 
 .row {
   background: #696969;
+  padding:3rem;
+}
+
+.modal{
+  background-color: rgba(0, 0, 0, 0.404);
+}
+
+.opponentInfoContainer{
+  display:flex;
+  flex-direction: row;
+  padding: 0;
+  position:absolute;
+  right:0;top:0;
+  z-index: 1061;
+  width:fit-content;
+  transition: all 200ms ease-in-out;
+}
+
+.opponentInfo{
+  height: 100vh;
+  width:400px;
+  background-color: white;
 }
 
 .resizer:hover {
   cursor: col-resize;
+}
+
+.langContainer{
+  width:6rem;
+  height:3rem;
+  margin: 0 0 2rem 1rem;
+  padding: 0;
+  perspective: 500px;
+  position: relative;
+  z-index: 1000;
+}
+
+.langBtn{
+  width: 6rem;
+  height: 3rem;
+  line-height: 3rem;
+  padding: 0 1rem;
+  text-transform: uppercase;
+  font-size: 14px;
+  color: rgba(0,0,0,0.7);
+  background-color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+
+.langItem{
+  width:6rem;
+  height:3rem;
+  line-height: 3rem;
+  padding:0 1rem;
+  margin: 0;
+  background: #ddd;
+  position:relative;
+  display: none;
+  opacity: 0%;
+}
+
+.langItem:hover{
+  background-color: #eee;
+  cursor: pointer;
+}
+
+.langItem:last-of-type{
+  border-radius: 0  0 5px 5px;
+}
+
+.langContainer:hover{
+  .langBtn{
+    border-radius:5px 5px 0 0;
+  }
+  .langItem{
+    display: block;
+    animation-name: coolAni;
+    animation-duration: 300ms;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
+    transform-origin:top;
+  }
+  .item1{
+    animation-delay: 00ms;
+    animation-duration: 500ms;
+  }.item2{
+    animation-delay: 100ms;
+    animation-duration: 500ms;
+  }.item3{
+    animation-delay: 200ms;
+    animation-duration: 500ms;
+  }.item4{
+    animation-delay: 300ms;
+    animation-duration: 500ms;
+  }
+  
+}
+
+@keyframes coolAni{
+  0%{opacity: 0%;transform:rotateX(-90deg)}
+  60%{opacity:100%;transform:rotateX(45deg);}
+  100%{opacity:100%;transform:rotateX(0deg);}
 }

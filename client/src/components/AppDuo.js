@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Dropdown } from "semantic-ui-react";
-
+import { Button } from 'semantic-ui-react';
 import languages from "../utils/languages";
 import "../styles/AppDuo.scss";
 //editor
@@ -15,39 +15,15 @@ function getWindowDimensions() {
 
 const AppDuo = ({ socket }) => {
   const { width } = getWindowDimensions();
-  const [langModeIndex1, setLangMode1] = useState(languages[0].index)
-  const [langModeIndex2, setLangMode2] = useState(languages[0].index)
-  const [currentLang1, setCurrentLang1] = useState(languages[0].key);
-  const [codeValue1, setCodeValue1] = useState(languages[0].template);
-  const [currentLang2, setCurrentLang2] = useState(languages[0].key);
-  const [codeValue2, setCodeValue2] = useState(languages[0].template);
-  const [resizerPos, setResizerPos] = useState(`${0.5 * width}`);
+  const [lang, setLang] = useState(languages[0]);
+  const [viewOpponent, setViewOpponent] = useState(false);
   const [editor1, setEditor1] = useState(false);
   const [editor2, setEditor2] = useState(false);
   const [spectator, setSpectator] = useState(false);
 
-  const dragEnd = (e) => {
-    const posi = Math.min(0.7 * width, Math.max(0.3 * width, e.clientX));
-    setResizerPos(posi);
-    // console.log(e.clientX);
-  };
-
-  const onDDChange1 = (e, data) => {
-    const selectedVal = languages.filter((v) => v.key === data.value);
-    setLangMode1(selectedVal[0].index)
-    setCurrentLang1(selectedVal[0].value);
-    setCodeValue1(selectedVal[0].template);
-  };
-
-  const onDDChange2 = (e, data) => {
-    const selectedVal = languages.filter((v) => v.key === data.value);
-    setLangMode2(selectedVal[0].index);
-    setCurrentLang2(selectedVal[0].value);
-    setCodeValue2(selectedVal[0].template);
-  };
-
   useEffect(() => {
     socket.on("allow", (data) => {
+
       if (data.data.members[0] === socket.id) {
         setEditor1(true);
       } else if (data.data.members[1] === socket.id) {
@@ -59,47 +35,27 @@ const AppDuo = ({ socket }) => {
     });
   });
 
-  console.log(currentLang2)
-
   return (
     <div className="row">
-      <div style={{ width: `${resizerPos}px` }}>
-        <Dropdown
-          style={{
-            margin: "1rem 1rem 0rem 1rem",
-            borderRadius: "1rem",
-          }}
-          placeholder="Languages"
-          onChange={onDDChange1}
-          selection
-          value={currentLang1}
-          options={languages}
-        />
-        <Editor spectator={spectator} editor={editor2} codeValue={codeValue1} modeIndex={langModeIndex1} currentLang={currentLang1} socket={socket}/>
+      <div className="modal" style={viewOpponent ? { display: "block" } : { display: "none" }}  onClick={()=>setViewOpponent(false)}/>
+      <div className="opponentInfoContainer" style={viewOpponent?{transform: "translateX(0px)"}:{transform: "translateX(400px)"}}>
+        <Button onClick={()=>setViewOpponent(!viewOpponent)} style={{height:"40px"}}>view info</Button>
+        <div className="opponentInfo"></div>
       </div>
-      <div
-        className="resizer"
-        style={{ left: `${resizerPos}px` }}
-        draggable="true"
-        onDragEnd={dragEnd}
-      ></div>
-      <div
-        style={{ width: `${width - resizerPos - 10}px`, marginLeft: "10px" }}
-      >
-        <Dropdown
-          style={{
-            margin: "1rem 1rem 0rem 1rem",
-            borderRadius: "1rem",
-          }}
-          placeholder="Languages"
-          onChange={onDDChange2}
-          selection
-          value={currentLang2}
-          options={languages}
-        />
-        <Editor spectator={spectator} editor={editor1} codeValue={codeValue2} modeIndex={langModeIndex2} currentLang={currentLang2} socket={socket}/>
+      <div className="langContainer">
+        <div className="langBtn">{lang.key}</div>
+          <div className="langItem item1" onClick={()=>setLang(languages[0])}>C++</div>
+          <div className="langItem item2" onClick={()=>setLang(languages[1])}>C</div>
+          <div className="langItem item3" onClick={()=>setLang(languages[2])}>Java</div>
+          <div className="langItem item4" onClick={()=>setLang(languages[3])}>Python 3</div>
       </div>
-    </div>
-  );
+      <div style={{display:`${editor2?'none':'block'}`}}>
+      <Editor spectator={spectator} editor={editor2} codeValue={lang.template} modeIndex={lang.index} currentLang={lang.key} socket={socket}/>
+      </div>
+      <div style={{display:`${editor1?'none':'block'}`}}>
+        <Editor spectator={spectator} editor={editor1} codeValue={lang.template} modeIndex={lang.index} currentLang={lang.key} socket={socket} style={{ display: `${editor2 ? 'none' : 'block'}` }} />
+      </div>
+		</div>
+	);
 };
 export default AppDuo;

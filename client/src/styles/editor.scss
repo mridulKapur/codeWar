@@ -1,16 +1,28 @@
 * {
   margin: 0;
   padding: 0;
-  box-sizing: 0;
+  box-sizing: border-box;
 }
 
 textarea {
-  margin: 0rem 0rem 0rem 1rem;
-  width: 274px;
-  height: 134px;
+  width: 48%;
+  height: 100%;
+  resize:none;
+  border-radius: 1rem;
+  padding:1rem;
+  margin-right:2%;
 }
 
-textarea.output {
-  width: 300px;
-  height: 134px;
+textarea:focus{
+  outline:none;
+}
+
+.output{
+  background-color: black;
+}
+
+.runButton{
+  width:20%;
+  height:calc(1rem + 200px);
+  margin-bottom: 1rem;
 }
