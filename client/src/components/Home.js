@@ -29,7 +29,7 @@ class Home extends React.Component {
   };
   createRoom = () => {
     console.log('in jr')
-    this.props.socket.emit("joinRoom", {
+    this.props.socket.emit("createRoom", {
       roomHash: this.props.roomHashDuo,
     });
   };

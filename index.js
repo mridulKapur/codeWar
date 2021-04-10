@@ -21,31 +21,28 @@ let rooms = [];
 io.on("connection", (socket) => {
   console.log(socket.id);
   socket.on("joinRoom", (data) => {
-    if (!rooms.includes(data.roomHash)) {
-      rooms.push(data.roomHash);
+      console.log("joining room...");
+    for (let room of rooms) {
+        if (room.name == data.roomHash && room.members.length == 1) {
+          socket.join(room.name);
+          room.members.push(socket.id);
+          socket.emit("allow2", {});
+          console.log("room joined", room);
+          break;
+        }
+      }
+  });
+  socket.on("createRoom", (data) => {
       let room = {};
       room.name = data.roomHash;
       room.members = [];
       socket.join(room.name);
       room.members.push(socket.id);
-      socket.emit("allow", {
+      socket.emit("allow1", {
         data: room,
       });
       rooms.push(room);
-      console.log(room);
-    } else {
-      console.log("here");
-      for (let obj of rooms) {
-        if (obj.name == data.roomHash) {
-          console.log(1, obj);
-          obj.members.push(socket.id);
-          socket.join(obj.name);
-          socket.emit("allow", {
-            data: obj,
-          });
-        }
-      }
-    }
+      console.log("created room",room);
   });
   socket.on("run", (data) => {
     let program = {
@@ -63,13 +60,17 @@ io.on("connection", (socket) => {
         console.log("error:", error);
         console.log("statusCode:", response && response.statusCode);
         console.log("body:", body);
-        io.emit('ans', {
+        socket.emit('ans', {
           output: body.output,
           code: data.code
         })
       }
     );
   });
+  socket.on("sendCode", (data) => {
+    console.log(data);
+    socket.broadcast.emit("reciveCode",data);
+  })
 });
 
 server.listen(port, () => {

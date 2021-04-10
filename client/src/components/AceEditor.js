@@ -1,8 +1,5 @@
 import React, { useState, useEffect } from "react";
-import $ from "jquery";
-import axios from "axios";
 import AceEditor from "react-ace";
-import * as ace from "ace-builds";
 import "../styles/editor.scss";
 import "ace-builds/src-noconflict/theme-monokai";
 import "ace-builds/src-noconflict/mode-c_cpp";
@@ -15,68 +12,82 @@ import { Button, TextArea } from "semantic-ui-react";
 
 let mode = ["c_cpp", "java", "python"];
 
-class Editor extends React.Component {
+const Editor = ({ spectator, editor1, editor2, codeValue, modeIndex, currentLang, socket }) => {
+	const [code, setCode] = useState(codeValue);
+	const [output, setOutput] = useState("");
+
+  useEffect(() => {
+		socket.on("ans", (data) => {
+			setOutput(data.output);
+    });
+	}, []);
+
+  useEffect(() => {
+    console.log("in effect2")
+		socket.on("reciveCode", (data) => {
+      if (data.editor1 == editor1 && data.editor2 == editor2) {
+        setCode(data.code);
+      }
+    });
+	}, []);
+
+  useEffect(() => {
+    setCode(codeValue);
+  },[codeValue])
   
-  constructor(props) {
-    super(props);
-    this.state = {
-      output: ""
-    }
-    this.editor = React.createRef();
-    this.runCode = this.runCode.bind(this);
-  }
+	console.log(code);
 
-  componentDidMount() {
-    this.props.socket.on('ans', (data) => {
-      this.setState({output: data.output})
-    })
-  }
+	const runCode = () => {
+		socket.emit("run", {
+			code: code,
+			language: currentLang,
+			input: "",
+		});
+	};
 
-  runCode = () => {
-    this.props.socket.emit('run', {
-      code: this.editor.current.editor.getValue(),
-      language: this.props.currentLang,
-      input: ''
-    })
-  };
+  const sendCode = (e) => {
+    console.log("lets send it!!");
+    setCode(e);
+		socket.emit("sendCode",{code:e,editor1:editor1,editor2:editor2});
+	};
 
-  render() {
-    return (
-      <div>
-        <AceEditor
-          style={{
-            margin: "1rem 1rem 0.8rem 0rem",
-            width: "inherit",
-            height: "70vh",
-          }}
-          ref={this.editor}
-          fontSize={18}
-          mode={mode[this.props.modeIndex]}
-          theme="github"
-          readOnly={this.props.spectator || this.props.editor ? true : false}
-          showPrintMargin={false}
-          name="UNIQUE_ID_OF_DIV"
-          value={this.props.codeValue}
-          editorProps={{ $blockScrolling: true }}
-          setOptions={{
-            enableBasicAutocompletion: true,
-            enableLiveAutocompletion: true,
-            enableSnippets: true,
-          }}
-        />
-        <div style={{display:"flex",flexDirection:"row-reverse",width:"100%",margin:"1rem 0"}}>
-          <Button className="runButton" onClick={this.runCode}>run</Button>
-          <div style={{display:"inline-flex",width:"80%",flexDirection:"row"}}>
-            <TextArea placeholder="Input"/>
-            <TextArea
-              value={this.state.output}
-              placeholder="Output"
-            />
-          </div>
-        </div>  
-      </div>
-    );
-  }
-}
+	return (
+		<div>
+			<AceEditor
+				style={{
+					margin: "1rem 1rem 0.8rem 0rem",
+					width: "inherit",
+					height: "70vh",
+				}}
+				fontSize={18}
+				mode={mode[modeIndex]}
+				theme='github'
+				readOnly={spectator || (editor1 && editor2)}
+				onChange={(e) => {
+          sendCode(e);
+				}}
+				showPrintMargin={false}
+				name='UNIQUE_ID_OF_DIV'
+				value={code}
+				editorProps={{ $blockScrolling: true }}
+				setOptions={{
+					enableBasicAutocompletion: true,
+					enableLiveAutocompletion: true,
+					enableSnippets: true,
+				}}
+			/>
+			<div
+				style={{ display: "flex", flexDirection: "row-reverse", width: "100%", margin: "1rem 0" }}>
+				<Button className='runButton' onClick={runCode}>
+					run
+				</Button>
+				<div style={{ display: "inline-flex", width: "80%", flexDirection: "row" }}>
+					<TextArea placeholder='Input' />
+					<TextArea value={output} placeholder='Output' />
+				</div>
+			</div>
+		</div>
+	);
+};
 
 export default Editor;
