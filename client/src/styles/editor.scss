@@ -1,0 +1,28 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+textarea {
+  width: 48%;
+  height: 100%;
+  resize:none;
+  border-radius: 1rem;
+  padding:1rem;
+  margin-right:2%;
+}
+
+textarea:focus{
+  outline:none;
+}
+
+.output{
+  background-color: black;
+}
+
+.runButton{
+  width:20%;
+  height:calc(1rem + 200px);
+  margin-bottom: 1rem;
+}
