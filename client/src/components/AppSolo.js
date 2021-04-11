@@ -8,31 +8,43 @@ import AceEditor from "react-ace";
 import * as ace from "ace-builds";
 import "ace-builds/src-noconflict/theme-monokai";
 import "ace-builds/src-noconflict/mode-c_cpp";
+import "ace-builds/src-noconflict/mode-java";
+import "ace-builds/src-noconflict/mode-python";
 import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/src-noconflict/ext-language_tools";
 import { Autocomplete } from "ace-builds/src-noconflict/ext-language_tools";
 
-
+let mode = ["c_cpp", "java", "python"];
 const AppSolo = ({ socket }) => {
   const [lang, setLang] = useState(languages[0]);
   const [code, setCode] = useState(lang.template);
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
+  const [roomName, setRoomName] = useState("");
 
   const setI = (e) => {
     setInput(e.target.value);
   };
   const runCode = () => {
-    socket.emit("run", {
+    socket.emit("runSolo", {
       code: code,
       language: lang.key,
-      input: input
+      input: input,
+      roomName
     });
+  };
+  const setC = (e) => {
+    setCode(e);
   };
 
   useEffect(() => {
-    socket.on("ans", (data) => {
-      setOutput(data.code)
+    socket.on('allowSolo', (data) => {
+      setRoomName(data.name)
+    })
+    console.log('ans')
+    socket.on("ansSolo", (data) => {
+      console.log(data)
+      setOutput(data.output)
     });
   }, []);
 
@@ -66,9 +78,10 @@ const AppSolo = ({ socket }) => {
             height: "70vh",
           }}
           fontSize={18}
-          mode="c_cpp"
+          mode={mode[lang.index]}
           theme="github"
           showPrintMargin={false}
+          onChange={(e) => setC(e)}
           name="UNIQUE_ID_OF_DIV"
           value={code}
           editorProps={{ $blockScrolling: true }}

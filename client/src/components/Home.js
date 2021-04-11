@@ -27,6 +27,11 @@ class Home extends React.Component {
       roomHash: this.state.inputValue,
     });
   };
+  joinSolo = () => {
+    this.props.socket.emit("joinSolo", {
+      roomHash: this.props.roomHashSolo
+    });
+  }
   createRoom = () => {
     console.log('in jr')
     this.props.socket.emit("joinRoom", {
@@ -49,7 +54,7 @@ class Home extends React.Component {
           Duo Create
         </Link>
         </Button>
-        <Button>
+        <Button onClick={this.joinSolo}>
           <Link to={`/code/solo/${this.props.roomHashSolo}`}>
           Solo
         </Link>
