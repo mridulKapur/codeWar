@@ -63,9 +63,11 @@ io.on("connection", (socket) => {
         console.log("error:", error);
         console.log("statusCode:", response && response.statusCode);
         console.log("body:", body);
-        socket.emit('ans', {
+        io.emit('ans', {
           output: body.output,
-          code: data.code
+          code: data.code,
+          editor1: data.editor1,
+          editor2: data.editor2
         })
       }
     );
