@@ -9,13 +9,13 @@ const io = socket(server);
 
 const port = process.env.PORT || 4333;
 
-// Deployment Code
+//Deployment Code
 
-// app.use(express.static(path.join(__dirname, 'client/build')))
+app.use(express.static(path.join(__dirname, "client/build")));
 
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(__dirname + '/client/build/index.html'))
-// })
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname + "/client/build/index.html"));
+});
 
 let rooms = [];
 io.on("connection", (socket) => {
@@ -47,11 +47,17 @@ io.on("connection", (socket) => {
       }
     }
   });
+  socket.on("joinSolo", (data) => {
+    let room = {};
+    room.name = data.roomHash;
+    socket.join(room.name);
+    socket.emit("allowSolo", room);
+  });
   socket.on("run", (data) => {
     let program = {
       code: data.code,
       language: data.language,
-      input: data.input
+      input: data.input,
     };
     request(
       {
@@ -63,19 +69,46 @@ io.on("connection", (socket) => {
         console.log("error:", error);
         console.log("statusCode:", response && response.statusCode);
         console.log("body:", body);
-        io.emit('ans', {
+        io.sockets.in(data.roomName).emit("ans", {
           output: body.output,
           code: data.code,
           editor1: data.editor1,
-          editor2: data.editor2
-        })
+          editor2: data.editor2,
+        });
+      }
+    );
+  });
+  socket.on("runSolo", (data) => {
+    let program = {
+      code: data.code,
+      language: data.language,
+      input: data.input,
+    };
+    request(
+      {
+        url: "https://codexweb.netlify.app/.netlify/functions/enforceCode",
+        method: "POST",
+        json: program,
+      },
+      (error, response, body) => {
+        console.log(data);
+        console.log("error:", error);
+        console.log("statusCode:", response && response.statusCode);
+        console.log("body:", body);
+        io.sockets.in(data.roomName).emit("ansSolo", {
+          output: body.output,
+          code: data.code,
+        });
       }
     );
   });
   socket.on("sendCode", (data) => {
     console.log(data);
-    socket.broadcast.emit("receiveCode",data);
-  })
+    socket.broadcast.to(data.roomName).emit("receiveCode", data);
+  });
+  socket.on("langUpdate", (data) => {
+    socket.broadcast.to(data.roomName).emit("langUpdated", data);
+  });
 });
 
 server.listen(port, () => {
