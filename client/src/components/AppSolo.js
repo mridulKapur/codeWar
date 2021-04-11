@@ -1,76 +1,91 @@
-import React from "react";
-import { Dropdown } from "semantic-ui-react";
+import React, { useState, useEffect } from "react";
+import { TextArea, Button } from "semantic-ui-react";
+
 import languages from "../utils/languages";
-import "../styles/AppSolo.scss";
-import * as ace from "ace-builds";
-import "ace-builds/src-noconflict/mode-c_cpp";
-import "ace-builds/src-noconflict/theme-monokai";
-import "ace-builds/src-noconflict/theme-github";
-
-import "ace-builds/src-noconflict/ext-language_tools";
+import "../styles/AppDuo.scss";
+//editor
 import AceEditor from "react-ace";
+import * as ace from "ace-builds";
+import "ace-builds/src-noconflict/theme-monokai";
+import "ace-builds/src-noconflict/mode-c_cpp";
+import "ace-builds/src-noconflict/theme-github";
+import "ace-builds/src-noconflict/ext-language_tools";
+import { Autocomplete } from "ace-builds/src-noconflict/ext-language_tools";
 
-class App extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      currentLang: languages[0].key,
-      codeValue: languages[0].template,
-    };
-    this.onDDChange = this.onDDChange.bind(this);
-  }
 
-  onDDChange = (e, data) => {
-    const selectedVal = languages.filter((v) => v.key === data.value);
-    this.setState({
-      currentLang: data.value,
-      codeValue: selectedVal[0].template,
+const AppSolo = ({ socket }) => {
+  const [lang, setLang] = useState(languages[0]);
+  const [code, setCode] = useState(lang.template);
+  const [input, setInput] = useState("");
+  const [output, setOutput] = useState("");
+
+  const setI = (e) => {
+    setInput(e.target.value);
+  };
+  const runCode = () => {
+    socket.emit("run", {
+      code: code,
+      language: lang.key,
+      input: input
     });
   };
 
-  render() {
-    return (
-      <div className="soloEditor">
-        <Dropdown
-          style={{
-            margin: "1rem 1rem 0rem 1rem",
-            borderRadius: "1rem",
-          }}
-          placeholder="Languages"
-          onChange={this.onDDChange}
-          selection
-          value={this.state.currentLang}
-          options={languages}
-        />
-        <div className="field">
-          <AceEditor
-            style={{
-              marginTop: "10px",
-              width: "80vw",
-              height: "90.4vh",
-            }}
-            fontSize={18}
-            mode="c_cpp"
-            theme="github"
-            showPrintMargin={false}
-            name="UNIQUE_ID_OF_DIV"
-            value={this.state.codeValue}
-            editorProps={{ $blockScrolling: true }}
-            setOptions={{
-              enableBasicAutocompletion: true,
-              enableLiveAutocompletion: true,
-              enableSnippets: true,
-            }}
-          />
-          <div className="flex">
-            <textarea className="input" placeholder="input" />
-            <textarea className="output" placeholder="output" disabled />
-            <button className="ui button big teal"> Run </button>
+  useEffect(() => {
+    socket.on("ans", (data) => {
+      setOutput(data.code)
+    });
+  }, []);
+
+  useEffect(() => {
+    setCode(lang.template)
+  }, [lang])
+
+  return (
+    <div className="row">
+      <div>
+        <div className="langContainer">
+          <div className="langBtn">{lang.key}</div>
+          <div className="langItem item1" onClick={() => setLang(languages[0])}>
+            C++
+          </div>
+          <div className="langItem item2" onClick={() => setLang(languages[1])}>
+            C
+          </div>
+          <div className="langItem item3" onClick={() => setLang(languages[2])}>
+            Java
+          </div>
+          <div className="langItem item4" onClick={() => setLang(languages[3])}>
+            Python 3
           </div>
         </div>
       </div>
-    );
-  }
-}
-
-export default App;
+      <AceEditor
+          style={{
+            margin: "3rem auto",
+            width: "80vw",
+            height: "70vh",
+          }}
+          fontSize={18}
+          mode="c_cpp"
+          theme="github"
+          showPrintMargin={false}
+          name="UNIQUE_ID_OF_DIV"
+          value={code}
+          editorProps={{ $blockScrolling: true }}
+          setOptions={{
+            enableBasicAutocompletion: true,
+            enableLiveAutocompletion: true,
+            enableSnippets: true,
+          }}
+        />
+        <div className="inline">
+        <span>
+          <TextArea placeholder="input" value={input} onChange={setI} />
+          <TextArea placeholder="output" disabled value={output} />
+          <Button onClick={runCode}>RUN</Button>
+        </span>
+      </div>
+    </div>
+  );
+};
+export default AppSolo;

@@ -5,43 +5,62 @@ import RunButton from "./button";
 import "../styles/editor.scss";
 import "ace-builds/src-noconflict/theme-monokai";
 import "ace-builds/src-noconflict/mode-c_cpp";
+import "ace-builds/src-noconflict/mode-java";
+import "ace-builds/src-noconflict/mode-python";
 import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/src-noconflict/ext-language_tools";
 import { Autocomplete } from "ace-builds/src-noconflict/ext-language_tools";
 import { Button, TextArea } from "semantic-ui-react";
 
-const Editor = ({ spectator, editor, codeValue, socket }) => {
+let mode = ["c_cpp", "java", "python"];
+
+const Editor = ({
+  spectator,
+  editor1,
+  editor2,
+  codeValue,
+  modeIndex,
+  currentLang,
+  socket,
+}) => {
   const [code, setCode] = useState(codeValue);
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");
   useEffect(() => {
-    socket.on('ans', (data) => {
-      setOutput(data.output)
-    })
-    console.log('idg', spectator)
-    socket.on("receiveCode", (data) => { 
-      console.log('in rc')
-      if(spectator) {
-        setCode(data.code)
+    socket.on("ans", (data) => {
+      if (data.editor1 == editor1 && data.editor2 == editor2) {
+        setOutput(data.output);
       }
     });
-  },[]);
+    socket.on("receiveCode", (data) => {
+      if (data.editor1 == editor1 && data.editor2 == editor2) {
+        setCode(data.code);
+      }
+    });
+  }, []);
+  useEffect(() => {
+    setCode(codeValue);
+  }, [codeValue]);
   const setC = (e) => {
     setCode(e);
     socket.emit("sendCode", {
-      code: e
+      code: e,
+      editor1: editor1,
+      editor2: editor2,
     });
   };
   const setI = (e) => {
     setInput(e.target.value);
   };
   const runCode = () => {
-    socket.emit('run', {
+    socket.emit("run", {
       code: code,
-      language: 'cpp',
-      input: input
-    })
-  }
+      language: currentLang,
+      input: input,
+      editor1,
+      editor2,
+    });
+  };
 
   return (
     <div>
@@ -52,10 +71,10 @@ const Editor = ({ spectator, editor, codeValue, socket }) => {
           height: "70vh",
         }}
         fontSize={18}
-        mode="c_cpp"
+        mode={mode[modeIndex]}
         theme="github"
         onChange={(e) => setC(e)}
-        readOnly={spectator || editor ? true : false}
+        readOnly={spectator ? true : false}
         showPrintMargin={false}
         name="UNIQUE_ID_OF_DIV"
         value={code}

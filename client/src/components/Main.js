@@ -65,7 +65,7 @@ class Main extends React.Component {
           ></Route>
           <Route
             path={`/code/solo/${this.state.roomHashSolo}`}
-            component={() => <AppSolo />}
+            component={() => <AppSolo socket={socket} />}
           ></Route>
         </Switch>
       </Router>
