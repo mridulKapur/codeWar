@@ -11,18 +11,18 @@ const port = process.env.PORT || 4333;
 
 // Deployment Code
 
-// app.use(express.static(path.join(__dirname, 'client/build')))
+app.use(express.static(path.join(__dirname, "client/build")));
 
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(__dirname + '/client/build/index.html'))
-// })
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname + "/client/build/index.html"));
+});
 
 let rooms = [];
 io.on("connection", (socket) => {
   console.log(socket.id);
   socket.on("joinRoom", (data) => {
     if (!rooms.includes(data.roomHash)) {
-      rooms.push(data.roomHash)
+      rooms.push(data.roomHash);
       let room = {};
       room.name = data.roomHash;
       room.members = [];
@@ -47,12 +47,12 @@ io.on("connection", (socket) => {
       }
     }
   });
-  socket.on('joinSolo', (data) => {
-    let room = {}
+  socket.on("joinSolo", (data) => {
+    let room = {};
     room.name = data.roomHash;
-    socket.join(room.name)
-    socket.emit('allowSolo', room)
-  })
+    socket.join(room.name);
+    socket.emit("allowSolo", room);
+  });
   socket.on("run", (data) => {
     let program = {
       code: data.code,
@@ -91,13 +91,13 @@ io.on("connection", (socket) => {
         json: program,
       },
       (error, response, body) => {
-        console.log(data)
+        console.log(data);
         console.log("error:", error);
         console.log("statusCode:", response && response.statusCode);
         console.log("body:", body);
         io.sockets.in(data.roomName).emit("ansSolo", {
           output: body.output,
-          code: data.code
+          code: data.code,
         });
       }
     );
@@ -106,9 +106,9 @@ io.on("connection", (socket) => {
     console.log(data);
     socket.broadcast.to(data.roomName).emit("receiveCode", data);
   });
-  socket.on('langUpdate', (data) => {
-    socket.broadcast.to(data.roomName).emit('langUpdated', data);
-  })
+  socket.on("langUpdate", (data) => {
+    socket.broadcast.to(data.roomName).emit("langUpdated", data);
+  });
 });
 
 server.listen(port, () => {
