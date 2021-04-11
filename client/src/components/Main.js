@@ -20,6 +20,7 @@ class Main extends React.Component {
   componentDidMount() {
     this.getRandomString(15);
     this.getRandomString(20);
+
   }
 
   getRandomString(length) {

@@ -29,7 +29,7 @@ class Home extends React.Component {
   };
   createRoom = () => {
     console.log('in jr')
-    this.props.socket.emit("createRoom", {
+    this.props.socket.emit("joinRoom", {
       roomHash: this.props.roomHashDuo,
     });
   };
@@ -39,17 +39,21 @@ class Home extends React.Component {
       <div>
         <h1>Home Page</h1>
         <input type="text" onChange={this.inputChange}/>
-        
-          <Link to={`/code/duo/${this.props.roomHashDuo}`} onClick={this.joinRoom} className="ui button">
+        <Button onClick={this.joinRoom}>
+          <Link to={`/code/duo/${this.props.roomHashDuo}`}>
           Duo Join
-          </Link>
-        
-          <Link to={`/code/duo/${this.props.roomHashDuo}`} onClick={this.createRoom} className="ui button">
+        </Link>
+        </Button>
+        <Button onClick={this.createRoom}>
+          <Link to={`/code/duo/${this.props.roomHashDuo}`}>
           Duo Create
         </Link>
-                  <Link to={`/code/solo/${this.props.roomHashSolo}`} className="ui button">
+        </Button>
+        <Button>
+          <Link to={`/code/solo/${this.props.roomHashSolo}`}>
           Solo
         </Link>
+        </Button>
       </div>
     );
   }
