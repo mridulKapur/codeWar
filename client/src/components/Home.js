@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Button } from "semantic-ui-react";
+import {} from "semantic-ui-react";
+import "../styles/home.scss";
 
 class Home extends React.Component {
   constructor(props) {
@@ -28,6 +29,7 @@ class Home extends React.Component {
     });
   };
   joinSolo = () => {
+    console.log('in jr')
     this.props.socket.emit("joinSolo", {
       roomHash: this.props.roomHashSolo
     });
@@ -41,26 +43,24 @@ class Home extends React.Component {
 
   render() {
     return (
-      <div>
-        <h1>Home Page</h1>
-        <input type="text" onChange={this.inputChange}/>
-        <Button onClick={this.joinRoom}>
-          <Link to={`/code/duo/${this.props.roomHashDuo}`}>
-          Duo Join
-        </Link>
-        </Button>
-        <Button onClick={this.createRoom}>
-          <Link to={`/code/duo/${this.props.roomHashDuo}`}>
-          Duo Create
-        </Link>
-        </Button>
-        <Button onClick={this.joinSolo}>
-          <Link to={`/code/solo/${this.props.roomHashSolo}`}>
-          Solo
-        </Link>
-        </Button>
-      </div>
-    );
+			<div className='container'>
+				<h1 className='title'>CodeWars</h1>
+				<input className="inputBox" type='text' onChange={this.inputChange} />
+				<div className="buttonContainer">
+					<Link onClick={this.joinRoom} to={`/code/duo/${this.props.roomHashDuo}`}>
+						<div className="link">Duo Join</div>
+					</Link>
+
+					<Link onClick={this.createRoom} to={`/code/duo/${this.props.roomHashDuo}`}>
+						<div className="link">Duo Create</div>
+					</Link>
+
+					<Link onClick={this.joinSolo} to={`/code/solo/${this.props.roomHashSolo}`}>
+						<div className="link">Solo</div>
+					</Link>
+				</div>
+			</div>
+		);
   }
 }
 

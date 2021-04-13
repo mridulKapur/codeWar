@@ -4,6 +4,7 @@ import SocketIOClient from "socket.io-client";
 import AppSolo from "./AppSolo";
 import AppDuo from "./AppDuo";
 import Home from "./Home";
+import "../styles/global.scss"
 const endpoint = "https://code-and-compete.herokuapp.com/";
 const socket = SocketIOClient(endpoint, { transports: ["websocket"] });
 
